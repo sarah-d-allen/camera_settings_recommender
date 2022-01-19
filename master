@@ -1,0 +1,221 @@
+# Python program to generate the best camera settings given your local weather conditions
+
+# import modules required
+import os
+import requests, json
+
+# Enter your API key below
+api_key = (Enter API from openweathermap.org)
+
+# base_url variable to store url
+base_url = "http://api.openweathermap.org/data/2.5/weather?"
+
+# Give city name
+city_name = input(" Enter city name:"
+                  "\n ")
+
+complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+
+# get method of requests module
+# return response object
+response = requests.get(complete_url)
+
+# json method of response object
+# convert json format data into
+# python format data
+x = response.json()
+
+# Now x contains list of nested dictionaries
+# Check the value of "cod" key is equal to
+# "404", means city is found otherwise,
+# city is not found
+if x["cod"] != "404":
+
+    # store the value of "main"
+    # key in variable y
+    y = x["main"]
+
+    # store the value corresponding
+    # to the "temp" key of y
+    current_temperature = y["temp"]
+    fahrenheit_conversion = float(current_temperature)
+    fahrenheit = 1.8 * (fahrenheit_conversion - 273) + 32
+    fahrenheit_round = round(fahrenheit)
+
+    # store the value corresponding
+    # to the "humidity" key of y
+    current_humidity = y["humidity"]
+    humidity_conversion = int(current_humidity)
+
+    # store the value of "weather"
+    # key in variable z
+    z = x["weather"]
+
+    # store the value corresponding
+    # to the "description" key at
+    # the 0th index of z
+    weather_description = z[0]["description"]
+
+    # print following values
+    print(" Location = " +
+          str(city_name) +
+          "\n Temperature (in fahrenheit) = " +
+          str(fahrenheit_round) + str(" degrees") +
+          "\n humidity (in percentage) = " +
+          str(humidity_conversion) + "%" +
+          "\n description = " +
+          str(weather_description))
+
+    # create conditional text
+    if weather_description == ("broken clouds", "scattered clouds", "few clouds"):
+        print("\n RECOMMENDED CAMERA SETTINGS" +
+              "\n \n ISO: 400 or 800, up to 1600 if conditions are darker"
+              "\n SHUTTER SPEED: 1/500th – 1/250th Second"
+              "\n APERTURE: f/1.4 - f/4 (lower f/stops for less light.)" +
+              "\n \n TIPS: The sky is partly cloudy, creating an ideal lighting condition for portrait photography. "
+              "\n Look out for to light pools and light sources to brighten your subjects in the front." +
+              "\n ----------------------------------------------------------------------------------------------")
+
+    if "rain" in weather_description or "storm" in weather_description or "drizzle" in weather_description or \
+            weather_description == "overcast clouds":
+        print("\n RECOMMENDED CAMERA SETTINGS" +
+              "\n \n ISO: 800 or 1000, increase if conditions are darker."
+              "\n SHUTTER SPEED: 1/50th - 1/200th, decrease if you want to let in more light."
+              "\n APERTURE: f/1.4, or whatever F/stop is lowest on your camera"
+              "\n \n TIPS: It can be tricky to shoot in poor weather conditions, but the light"
+              "\n will often be softer. Consider using an external flash and placing them behind the silhouette"
+              "\n of your subject. Shooting in RAW will help restore any exposure or lighting issues. " +
+              "\n ----------------------------------------------------------------------------------------------")
+
+    if "snow" in weather_description or weather_description == "light snow":
+        print("\n RECOMMENDED CAMERA SETTINGS" +
+              "\n \n EXPOSURE: Between +0.7 to +1.0"
+              "\n ISO: If bright, ISO 64-100. If low-lit, 400-640"
+              "\n SHUTTER SPEED: No slower than 1/500th for action shots, start at 1/100th to capture falling snow."
+              "\n APERTURE: F/1.4 - F/4. Keep aperture wide open (lower F/stops) for more light in snow.  "
+              "\n METERING: Spot metering aimed at subject's skin"
+              "\n \n TIPS: There is light snow, which can be tricky to photograph in. "
+              "\n One trick to help in difficult lighting is to actually overexpose for the snow." +
+              "\n ----------------------------------------------------------------------------------------------")
+
+    if weather_description == "clear sky":
+        print("\n RECOMMENDED CAMERA SETTINGS" +
+              "\n \n EXPOSURE: +16"
+              "\n ISO: Start at an ISO of 50-100, and increase if needed"
+              "\n SHUTTER SPEED: 1/250th - 1/500th second or 1/1000 second to avoid capturing an “overexposure"
+              "\n APERTURE: F/1.4 - F/2.5. Lower F/stops help mitigate harsh sunlight situations.  "
+              "\n METERING: Spot metering aimed at subject's skin"
+              "\n \n TIPS: The sky is clear and bright. Don't let harsh sunlight directly hit subject's faces. "
+              "\n Put subject's backs at an angle to the sun so that their faces are completely shaded." +
+              "\n ----------------------------------------------------------------------------------------------")
+
+        if fahrenheit_round >= 100:
+            print("\n CAUTION: Temperatures over 100 degrees fahrenheit can damage your camera and lens."
+                  "\n Consider these tips to protect your equipment: "
+                  "\n 1. Be sure to keep your camera in a padded bag as much as possible."
+                  "\n 2. Scope out a shady spot ahead of time."
+                  "\n 3. Allow the camera a few minutes to acclimate to the new environment inside of it's container."
+                  "\n 4. Bring a microfiber cloth and wipe often, especially in humid conditions." +
+                  "\n ----------------------------------------------------------------------------------------------")
+
+        if current_humidity >= 85:
+            print("\n CAUTION: High humidity (~85% +) can damage your camera body and lens."
+                  "\n Consider these tips to protect your equipment:"
+                  "\n 1. Store equipment with silica gel packs, humidity control cabinets, or a dehumidifier."
+                  "\n 2. Keep microfiber lens cloth on hand, wipe often to prevent condensation. "
+                  "\n 3. Exposure to UV light kills the fungus, so take out your camera often."
+                  "\n 4. Avoid changing lenses, towel off camera and lens exterior with absorbent fabric." +
+                  "\n ----------------------------------------------------------------------------------------------")
+
+            # end or continue
+    print(" Analysis complete."
+          "\n ----------------------------------------------------------------------------------------------"
+          "\n \n Would you like more personalized tips?"
+          "\n")
+    options = ["yes", "no"]
+
+    # Print out your options
+    for i in range(len(options)):
+        print(str(i + 1) + ":", options[i])
+
+    # Take user input and get the corresponding item from the list
+    inp2 = int(input("Enter a number: "))
+    if inp2 == 1:
+        pass
+    elif inp2 == 2:
+        print("Have fun shooting!")
+        from sys import exit
+
+        exit()
+
+    # Select time of day
+    print("\n At what time will you photograph?"
+          "\n")
+    options = ["morning", "afternoon", "golden hour", "evening"]
+
+    # Print out your options
+    for i in range(len(options)):
+        print(str(i + 1) + ":", options[i])
+
+    # Take user input and get the corresponding item from the list
+    inp1 = int(input("\n Enter a number: "))
+    if inp1 == 1:
+        print("\n Depending on where you live, you might have better luck with the weather in the morning. "
+              "\n Most mornings are calm and still. Oftentimes there’s a light hazy cloud cover that makes any "
+              "\n shooting direction work, so you can use your backgrounds to their fullest extent. "
+              "\n Make sure subjects dress warm. "
+              "\n ----------------------------------------------------------------------------------------------")
+
+    if inp1 == 2:
+        print("\n Shooting in early afternoon can bring harsh sunlight. Consider investing in a "
+              "\n neutral density (ND) filter for your lens to avoid sun glares/light distortions."
+              "\n Without an ND on your lens, you will want to bring your aperture up to around F/12."
+              "\n To avoid shooting in harsh sunlight, find spots with shade and shadow for balance."
+              "\n ----------------------------------------------------------------------------------------------")
+
+    if inp1 == 3:
+        print("\n Golden hour is considered one of the best times of day to photograph subjects."
+              "\n Golden hour starts one hour after sunrise, and one hour before sunset. Plan accordingly."
+              "\n At this time, light is softer, warmer, and more directional. You can easily create"
+              "\n a glow with back-lighting, side-lighting, or front-lighting with a reflector."
+              "\n ----------------------------------------------------------------------------------------------")
+
+    if inp1 == 4:
+        print("\n It can be difficult to attain good lighting in dark conditions. Set your image settings to"
+              "\n RAW (for more dynamic post-op editng), and consider investing in a remote flash and flash-"
+              "\n softener or filter (to lessen the effect of stark shadows on subjects. Be sure to use your"
+              "\n lowest aperture to allow more light. A tripod is recommended for slower shutter speeds, to"
+              "\n stabilize the movement of the camera. Use a higher ISO to lighten the image, at your discretion."
+              "\n ----------------------------------------------------------------------------------------------")
+
+    # Check for sand/snow
+    print("\n Will you be shooting in sand or snow?"
+          "\n")
+    options = ["yes", "no"]
+
+    # Print out your options
+    for i in range(len(options)):
+        print(str(i + 1) + ":", options[i])
+
+    # Take user input and get the corresponding item from the list
+    inp2 = int(input("Enter a number: "))
+    if inp2 == 1:
+        print("\n TIPS FOR SHOOTING IN SNOW/SAND" +
+              "\n \n TIPS: Sand and snow can be tricky to photograph in. "
+              "\n One trick to help in difficult lighting is to actually overexpose for the extra brightness." +
+              "\n A polarizing filter can also help with the glare of sunlight on snow or sand. "
+              "\n ----------------------------------------------------------------------------------------------")
+    if inp2 == 2:
+        print("\n Analysis complete.")
+
+        print("Have fun shooting!")
+        from sys import exit
+
+        exit()
+
+
+else:
+    print(f"\n City '{city_name}' Not Found. Please try again. \n")
+    os.system("python main.py")
+    print("Restarting...")
+    exit()
